@@ -45,3 +45,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+#Schemas
+schema.txt
+
+# Draws
+*.drawio
