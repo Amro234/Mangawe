@@ -38,6 +38,5 @@ class Settings:
         if origin.strip()
     ]
 
-
-# 3. Create a single instance to be imported across the app
+#! instance of the function to be used
 settings = Settings()
