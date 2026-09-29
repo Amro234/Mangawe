@@ -5,24 +5,23 @@ def get_products(genre: Optional[str] = None, search: Optional[str] = None):
     with get_db() as conn:
         cursor = conn.cursor()
         query = "SELECT * FROM products WHERE 1=1"
-        conditions = []
         params = []
 
         if genre: 
-            conditions.append("genre LIKE ?")
+            query += " AND genre LIKE ?"
             params.append(f"%{genre}%")
 
         if search:
-            conditions.append("title LIKE ?")
+            query += " AND (title LIKE ? OR author LIKE ?)"
+            params.append(f"%{search}%")
             params.append(f"%{search}%")
 
-        if conditions:
-            query += " WHERE " + " AND ".join(conditions)
 
         cursor.execute(query, params)
         rows = cursor.fetchall()
 
-        return rows
+        result_search = [dict(row) for row in rows]  
+        return result_search
 
 
 def getProductById(product_id: int):
@@ -32,4 +31,7 @@ def getProductById(product_id: int):
         cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
         row = cursor.fetchone()
 
-        return row
+        result_id = dict(row) if row else None
+        return result_id
+
+    
