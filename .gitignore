@@ -21,6 +21,7 @@ parts/
 sdist/
 var/
 wheels/
+*.__pycache__
 
 # Database
 *.db
