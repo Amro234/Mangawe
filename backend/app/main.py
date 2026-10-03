@@ -47,3 +47,13 @@ def root():
         "status": "online",
         "docs_url": "/docs"
     }
+def main():
+    print("Initializing database tables...")
+    init_db()
+    print("Seeding database data...")
+    seed_db()
+    print("Database setup complete.")
+
+
+if __name__ == "__main__":
+    main()
