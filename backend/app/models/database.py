@@ -1,8 +1,8 @@
 import sqlite3
-from contextlib import contextmanager
-from backend.app.core.config import settings
 import json
+from contextlib import contextmanager
 from pathlib import Path
+from backend.app.core.config import settings
 
 
 @contextmanager
@@ -27,7 +27,7 @@ def init_db():
         conn.commit()
         print("Database tables created successfully.")
 
-# * users table 
+# users table 
 
 users = """CREATE TABLE IF NOT EXISTS users (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,7 +58,7 @@ image TEXT,
 description TEXT  
 )"""
 
-#& Orders table
+# * Orders table
 
 orders = """CREATE TABLE IF NOT EXISTS orders(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -85,13 +85,14 @@ FOREIGN KEY (prod_id) REFERENCES products(id)
 
 logs = """CREATE TABLE IF NOT EXISTS logs (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
-ip_add TEXT NOT NULL,
+user_id INTEGER,
+ip_address TEXT NOT NULL,
 path TEXT NOT NULL, 
 method TEXT NOT NULL,
 status_code INTEGER NOT NULL, 
 timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
-user_id INTEGER,
-latency_ms REAL NOT NULL
+latency_ms REAL NOT NULL,
+FOREIGN KEY (user_id) REFERENCES users (id)
 )"""
 
 
@@ -138,3 +139,4 @@ def seed_db():
             ))
 
         conn.commit()
+        print("Database seeded successfully.")
