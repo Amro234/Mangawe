@@ -1,12 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from backend.app.core.config import settings
 from backend.app.models.database import init_db, seed_db
-
 from backend.app.routers import products, orders, auth, users, logs
-
+from backend.app.middleware.logs import BHM
 
 @asynccontextmanager
 async def startSpan(_app: FastAPI):
@@ -32,6 +30,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(BHM)
 
 app.include_router(products.router)
 app.include_router(orders.router)
