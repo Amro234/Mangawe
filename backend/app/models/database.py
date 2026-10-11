@@ -46,8 +46,13 @@ phone TEXT,
 role TEXT DEFAULT 'client',
 city TEXT,
 auth_provider TEXT DEFAULT 'local',
-is_active DEFAULT 1,
-created_at TEXT DEFAULT CURRENT_TIMESTAMP
+is_active INTEGER DEFAULT 1,
+created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+failed_to_login INTEGER DEFAULT 0,
+failure_window_started_at TEXT,
+locked_until TEXT,
+lockout_level INTEGER DEFAULT 0,
+password_change TEXT
 )"""
 
 
