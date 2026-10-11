@@ -1,7 +1,14 @@
 import sqlite3
 import json
+import sys
 from contextlib import contextmanager
 from pathlib import Path
+
+# Ensure project root is on sys.path when running directly as a script
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 from backend.app.core.config import settings
 
 
@@ -11,7 +18,7 @@ def get_db():
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
     try:
-        yield conn
+        yield conn 
     finally:
         conn.close()
 
@@ -27,7 +34,8 @@ def init_db():
         conn.commit()
         print("Database tables created successfully.")
 
-# users table 
+# users table
+
 
 users = """CREATE TABLE IF NOT EXISTS users (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,7 +77,7 @@ created_at TEXT DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (user_id) REFERENCES users (id)
 )"""
 
-#? recipt table (AKA orders_items table)
+# ? recipt table (AKA orders_items table)
 
 recipt = """CREATE TABLE IF NOT EXISTS recipt(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,23 +108,24 @@ FOREIGN KEY (user_id) REFERENCES users (id)
 def seed_db():
     with get_db() as conn:
         cursor = conn.cursor()
-        
-        #^ Check if products already exist
+
+        # ^ Check if products already exist
         cursor.execute("SELECT COUNT(*) FROM products;")
         count = cursor.fetchone()[0]
-    
-        # ! HERE when product table is created then it skips it and not make it again !! 
+
+        # ! HERE when product table is created then it skips it and not make it again !!
         if count > 0:
             print("Products table already seeded. Skipping.")
             return
 
-        json_path = Path(__file__).resolve().parent.parent / "data" / "manga.json"
-        
+        json_path = Path(__file__).resolve().parent.parent / \
+            "data" / "manga.json"
+
         if not json_path.exists():
             print(f"Seed file not found at: {json_path}")
             return
-            
-        #^ Read JSON data
+
+        # ^ Read JSON data
         with open(json_path, "r", encoding="utf-8") as f:
             manga_list = json.load(f)
 
@@ -124,7 +133,7 @@ def seed_db():
         INSERT INTO products (title, author, genre, release_date, rating, price, stock, image, description)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """
-        
+
         for item in manga_list:
             cursor.execute(insert_sql, (
                 item["title"],
@@ -140,3 +149,8 @@ def seed_db():
 
         conn.commit()
         print("Database seeded successfully.")
+
+
+if __name__ == "__main__":
+    init_db()
+    seed_db()
