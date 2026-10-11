@@ -91,13 +91,13 @@ def login_user(credentials: UserLogin_Base):
         window_start_dt = parse_utc_timestamp(user.get("failure_window_started_at"))
         lockout_level = user.get("lockout_level") or 0
 
-    if not window_start_dt or (now - window_start_dt) > timedelta(minutes=15):
+        if not window_start_dt or (now - window_start_dt) > timedelta(minutes=15):
             attempts = 0
             window_start_dt = now
 
-            attempts += 1
+        attempts += 1
 
-    if attempts >= 5:
+        if attempts >= 5:
             # Trigger Lockout
             lockout_level += 1
             # Exponential backoff: 1, 2, 4, 8, 16, max 30 minutes
@@ -115,7 +115,7 @@ def login_user(credentials: UserLogin_Base):
                 status_code=status.HTTP_423_LOCKED,
                 detail=f"Too many failed login attempts. Account locked for {lock_minutes} minute(s)."
             )
-    else:
+        else:
             # Record failed attempt
             user_model.update_lockout_state(
                 user_id=user["id"],

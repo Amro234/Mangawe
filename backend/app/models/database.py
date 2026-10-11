@@ -31,6 +31,13 @@ def init_db():
         cursor.execute(orders)
         cursor.execute(recipt)
         cursor.execute(logs)
+
+        # Migration: ensure column name matches failed_login_attempts
+        cursor.execute("PRAGMA table_info(users);")
+        columns = [row[1] for row in cursor.fetchall()]
+        if "failed_to_login" in columns and "failed_login_attempts" not in columns:
+            cursor.execute("ALTER TABLE users RENAME COLUMN failed_to_login TO failed_login_attempts;")
+
         conn.commit()
         print("Database tables created successfully.")
 
@@ -48,7 +55,7 @@ city TEXT,
 auth_provider TEXT DEFAULT 'local',
 is_active INTEGER DEFAULT 1,
 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-failed_to_login INTEGER DEFAULT 0,
+failed_login_attempts INTEGER DEFAULT 0,
 failure_window_started_at TEXT,
 locked_until TEXT,
 lockout_level INTEGER DEFAULT 0,
