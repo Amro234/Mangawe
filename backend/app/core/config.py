@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 # *1. Resolve the path to the root directory where .env lives
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 ENV_PATH = BASE_DIR / ".env"
-
 # *2. Load the .env file if it exists
 load_dotenv(dotenv_path=ENV_PATH)
 
